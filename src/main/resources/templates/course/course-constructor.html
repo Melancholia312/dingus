@@ -1,0 +1,172 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Курс</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+          integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+            crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
+    <a class="navbar-brand" href="/">Dingus</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Каталог</a>
+            </li>
+            <li sec:authorize="!hasRole('ROLE_TEACHER')" class="nav-item">
+                <a class="nav-link" th:href="@{/my-learning}">Мое обучение</a>
+            </li>
+            <li sec:authorize="hasRole('ROLE_TEACHER')" class="nav-item">
+                <a class="nav-link" th:href="@{/my-courses}">Мои курсы</a>
+            </li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
+                <a class="nav-link" th:href="@{/admin-panel}">Административная панель</a>
+            </li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
+                <a class="nav-link" th:href="@{/group-manager}">Менеджер групп</a>
+            </li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
+                <a class="nav-link" th:href="@{/analysis}">Аналитика</a>
+            </li>
+
+        </ul>
+
+        <ul sec:authorize="isAuthenticated()" class="nav navbar-nav pull-right  mr-5">
+            <li class="nav-item dropdown">
+                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" th:href="@{/settings}">Настройки</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" th:href="@{/logout}">Выйти</a>
+                </div>
+            </li>
+        </ul>
+        <ul sec:authorize="!isAuthenticated()" class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/login}">Зайти в аккаунт</a>
+            </li>
+            <li class="nav-link">|</li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/registration}">Зарегистрироваться</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+
+    <h3 th:object="${course}" th:text="${'Летучки курса ' + course.name}"></h3>
+
+    <hr/>
+    <a th:href="@{/module/add (courseId=${course.id})}" class="btn btn-primary">Создать летучку</a>
+    <br/><br/>
+
+
+    <form th:action="@{/module/switch (courseId=${course.id})}" th:object="${modules}"
+          method="POST">
+        <table class="table table-bordered table-striped" id="moduleTable">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Название</th>
+                <th>Количество уроков</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="module, itemStat : *{modules}" class="float-child">
+                <td><input type="hidden" th:field="*{modules[__${itemStat.index}__].moduleNumber}"/>
+                    <input type="hidden" th:field="*{modules[__${itemStat.index}__].id}"/>
+                </td>
+                <td th:text="*{modules[__${itemStat.index}__].name}"> </td>
+                <td>
+                    <p th:text="${#lists.size(module.steps)}"></p>
+                    <hr>
+                    <a th:href="@{/module/{id}/steps (id = ${module.id}, courseId=${module.course.id}) }"
+                       class="btn btn-primary">Посмотреть все уроки</a>
+                </td>
+                <td>
+
+                    <a th:href="@{/step/add (moduleId = ${module.id}, type='lection-step') }"
+                       class="btn btn-primary">Добавить лекцию</a>
+                    <a th:href="@{/step/add (moduleId = ${module.id}, type='word-answer-step') }"
+                       class="btn btn-primary">Добавить вопрос-ответ</a>
+                    <a th:href="@{/step/add (moduleId = ${module.id}, type='test-step') }"
+                       class="btn btn-primary">Добавить вопрос с тестом</a>
+                    <hr>
+                    <a th:href="@{/module/{id}/edit (id = ${module.id}) }"
+                       class="btn btn-info">Редактировать</a>
+                    <a th:href="@{/module/{id}/delete (id = ${module.id}) }"
+                       class="btn btn-danger">Удалить</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <button th:if="${#lists.size(modules.modules) > 1}" type="submit" class="btn btn-primary col-2">Сохранить изменения</button>
+    </form>
+
+    <a th:href="@{/my-courses}">Обратно к моим курсам</a>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.js"></script>
+<script>
+const ELS = (sel, par) => (par || document).querySelectorAll(sel);
+const ELS_child = ELS(".float-child");
+
+let EL_drag; // Used to remember the dragged element
+
+const addEvents = (EL_ev) => {
+  EL_ev.setAttribute("draggable", "true");
+  EL_ev.addEventListener("dragstart", onstart);
+  EL_ev.addEventListener("dragover", (ev) => ev.preventDefault());
+  EL_ev.addEventListener("drop", ondrop);
+};
+
+const onstart = (ev) => EL_drag = ev.currentTarget;
+
+const ondrop = (ev) => {
+  if (!EL_drag) return;
+
+  ev.preventDefault();
+
+  const EL_targ = ev.currentTarget;
+  const EL_targClone = EL_targ.cloneNode(true);
+  const EL_dragClone = EL_drag.cloneNode(true);
+
+  const targCloneValue = EL_targClone.childNodes[1].firstChild.value;
+  const dragCloneValue = EL_dragClone.childNodes[1].firstChild.value;
+
+  EL_targ.replaceWith(EL_dragClone);
+  EL_drag.replaceWith(EL_targClone);
+
+  EL_targClone.childNodes[1].firstChild.value = dragCloneValue;
+  EL_dragClone.childNodes[1].firstChild.value = targCloneValue;
+
+  addEvents(EL_targClone); // Reassign events to cloned element
+  addEvents(EL_dragClone); // Reassign events to cloned element
+
+  EL_drag = undefined;
+};
+
+ELS_child.forEach((EL_child) => addEvents(EL_child));
+
+
+</script>
+</body>
+
+</html>

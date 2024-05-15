@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Чеклист</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+          integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
+    <a class="navbar-brand" href="/">Dingus</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Каталог</a>
+            </li>
+            <li sec:authorize="!hasRole('ROLE_TEACHER')" class="nav-item">
+                <a class="nav-link" th:href="@{/my-learning}">Мое обучение</a>
+            </li>
+            <li sec:authorize="hasRole('ROLE_TEACHER')" class="nav-item">
+                <a class="nav-link" th:href="@{/my-courses}">Мои курсы</a>
+            </li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
+                <a class="nav-link" th:href="@{/admin-panel}">Административная панель</a>
+            </li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
+                <a class="nav-link" th:href="@{/group-manager}">Менеджер групп</a>
+            </li>
+            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
+                <a class="nav-link" th:href="@{/analysis}">Аналитика</a>
+            </li>
+
+        </ul>
+
+        <ul sec:authorize="isAuthenticated()" class="nav navbar-nav pull-right  mr-5">
+            <li class="nav-item dropdown">
+                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" th:href="@{/settings}">Настройки</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" th:href="@{/logout}">Выйти</a>
+                </div>
+            </li>
+        </ul>
+        <ul sec:authorize="!isAuthenticated()" class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/login}">Зайти в аккаунт</a>
+            </li>
+            <li class="nav-link">|</li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/registration}">Зарегистрироваться</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="mask d-flex align-items-center h-100 gradient-custom-3">
+    <div class="container h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                <div class="card" style="border-radius: 15px;">
+                    <div class="card-body p-5">
+                        <h2 class="text-center mb-5" th:text="'Чеклист курса ' + ${checklist.courseName}"></h2>
+                        <div class="form-outline mb-4">
+                            <p th:text="'Нужное количество летучек - ' + ${checklist.modulesRequired} + ';'"></p>
+                            <ul>
+                                <li th:if="${checklist.modulesRequired} > ${checklist.modulesCount}"
+                                    th:text="'Летучек в курсе: ' + ${checklist.modulesCount} + ' ❌'"></li>
+                                <li th:if="${checklist.modulesRequired} <= ${checklist.modulesCount}"
+                                    th:text="'Летучек в курсе: ' + ${checklist.modulesCount} + ' ✅'"></li>
+                                <br th:if="${checklist.modulesRequired} > ${checklist.modulesCount}">
+                                <a th:if="${checklist.modulesRequired} > ${checklist.modulesCount}"
+                                   th:href="@{/module/add (courseId=${checklist.courseId})}" class="btn btn-primary">Добавить летучку</a>
+                            </ul>
+                        </div>
+                        <hr>
+                        <div class="form-outline mb-4">
+                            <p th:text="'Нужное количество уроков в каждой летучке - ' + ${checklist.stepRequired} + ';'"></p>
+                            <ul th:each="module : ${checklist.isEnoughSteps}">
+                                <li th:if="${module.value}"
+                                    th:text="'Летучка ' + ${module.key.name} + ': ' + ${module.key.steps.size()} + ' ✅'"></li>
+                                <li th:if="${!module.value}"
+                                    th:text="'Летучка ' + ${module.key.name} + ': ' + ${module.key.steps.size()} + ' ❌'"></li>
+                                <br th:if="${!module.value}">
+                                <a th:if="${!module.value}"
+                                   th:href="@{/module/{id}/steps (id=${module.key.id})}" class="btn btn-primary">Добавить урок</a>
+                            </ul>
+                        </div>
+                        <hr>
+                        <div class="form-outline mb-4">
+                            - Каждый тестовый вопрос должен содержать как минмум один верный вариант ответа
+                            <br>
+                            - Каждый тестовый вопрос должен иметь как минимум два ответа
+                            <br>
+                            - Тестовый вопрос с одним правильным варинтом ответа должен содержать один правильный
+                            вариант ответа
+                            <br>
+                            <br>
+                            <div th:each="entry : ${checklist.moduleWithTestSteps}">
+                                <p th:text="'Летучка ' + ${entry.key.name} + ':'"></p>
+                                <ul th:if="${entry.value.size() == 0}">
+                                    <li th:if="${entry.value.size() == 0}">В этой летучке нет тестовых вопросов</li>
+                                </ul>
+                                <ul th:each="step : ${entry.value}">
+                                    <li style="white-space: pre-line"
+                                        th:if="${step.key.multiAnswers and step.key.answers.size() > 1 and step.value >= 1}"
+                                        th:text="'Тестовый урок с вопросом ' + '*' + ${step.key.question} + '*' + ' с несколькими варинтами ответов ✅
+                                        (Правильных - ' + ${step.value} + ' | Общее количество ответов - ' + ${step.key.answers.size()} + ')'"></li>
+                                    <a th:href="@{/test-step/{id}/answers (id=${step.key.id})}"><li style="white-space: pre-line"
+                                        th:if="${step.key.multiAnswers and (step.key.answers.size() <= 1 or step.value == 0)}"
+                                        th:text="'Тестовый урок с вопросом ' + '*' + ${step.key.question} + '*' + ' с несколькими варинтами ответов ❌
+                                         (Правильных - ' + ${step.value} + ' | Общее количество ответов - ' + ${step.key.answers.size()} + ')'"></li></a>
+                                    <li style="white-space: pre-line"
+                                        th:if="${!step.key.multiAnswers and step.key.answers.size() > 1 and step.value == 1}"
+                                        th:text="'Тестовый урок с вопросом ' + '*' + ${step.key.question} + '*' + ' с одним вариантом ответа ✅
+                                        (Правильных - ' + ${step.value} + ' | Общее количество ответов - ' + ${step.key.answers.size()} + ')'"></li>
+                                    <a th:href="@{/test-step/{id}/answers (id=${step.key.id})}"><li style="white-space: pre-line"
+                                        th:if="${!step.key.multiAnswers and (step.key.answers.size() <= 1 or step.value != 1)}"
+                                        th:text="'Тестовый урок с вопросом ' + '*' + ${step.key.question} + '*' + ' с одним вариантом ответа ❌
+                                        (Правильных - ' + ${step.value} + ' | Общее количество ответов - ' + ${step.key.answers.size()} + ')'"></li></a>
+                                </ul>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-center">
+                            <a th:href="@{/course/{id}/constructor (id=${checklist.courseId})   }">
+                                <button type="button"
+                                        class="btn btn-primary">К курсу
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
