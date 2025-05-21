@@ -39,15 +39,14 @@
             <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
                 <a class="nav-link" th:href="@{/group-manager}">Менеджер групп</a>
             </li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
-                <a class="nav-link" th:href="@{/analysis}">Аналитика</a>
-            </li>
+
 
         </ul>
 
         <ul sec:authorize="isAuthenticated()" class="nav navbar-nav pull-right  mr-5">
             <li class="nav-item dropdown">
-                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button"
+                   data-toggle="dropdown" aria-expanded="false">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" th:href="@{/settings}">Настройки</a>
@@ -92,7 +91,7 @@
                 <td><input type="hidden" th:field="*{modules[__${itemStat.index}__].moduleNumber}"/>
                     <input type="hidden" th:field="*{modules[__${itemStat.index}__].id}"/>
                 </td>
-                <td th:text="*{modules[__${itemStat.index}__].name}"> </td>
+                <td th:text="*{modules[__${itemStat.index}__].name}"></td>
                 <td>
                     <p th:text="${#lists.size(module.steps)}"></p>
                     <hr>
@@ -108,6 +107,9 @@
                     <a th:href="@{/step/add (moduleId = ${module.id}, type='test-step') }"
                        class="btn btn-primary">Добавить вопрос с тестом</a>
                     <hr>
+                    <a th:href="@{/step/add (moduleId = ${module.id}, type='console-step') }"
+                       class="btn btn-primary">Добавить задание с консолью</a>
+                    <hr>
                     <a th:href="@{/module/{id}/edit (id = ${module.id}) }"
                        class="btn btn-info">Редактировать</a>
                     <a th:href="@{/module/{id}/delete (id = ${module.id}) }"
@@ -116,7 +118,9 @@
             </tr>
             </tbody>
         </table>
-        <button th:if="${#lists.size(modules.modules) > 1}" type="submit" class="btn btn-primary col-2">Сохранить изменения</button>
+        <button th:if="${#lists.size(modules.modules) > 1}" type="submit" class="btn btn-primary col-2">Сохранить
+            изменения
+        </button>
     </form>
 
     <a th:href="@{/my-courses}">Обратно к моим курсам</a>
@@ -125,45 +129,45 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.js"></script>
 <script>
-const ELS = (sel, par) => (par || document).querySelectorAll(sel);
-const ELS_child = ELS(".float-child");
+    const ELS = (sel, par) => (par || document).querySelectorAll(sel);
+    const ELS_child = ELS(".float-child");
 
-let EL_drag; // Used to remember the dragged element
+    let EL_drag; // Used to remember the dragged element
 
-const addEvents = (EL_ev) => {
-  EL_ev.setAttribute("draggable", "true");
-  EL_ev.addEventListener("dragstart", onstart);
-  EL_ev.addEventListener("dragover", (ev) => ev.preventDefault());
-  EL_ev.addEventListener("drop", ondrop);
-};
+    const addEvents = (EL_ev) => {
+      EL_ev.setAttribute("draggable", "true");
+      EL_ev.addEventListener("dragstart", onstart);
+      EL_ev.addEventListener("dragover", (ev) => ev.preventDefault());
+      EL_ev.addEventListener("drop", ondrop);
+    };
 
-const onstart = (ev) => EL_drag = ev.currentTarget;
+    const onstart = (ev) => EL_drag = ev.currentTarget;
 
-const ondrop = (ev) => {
-  if (!EL_drag) return;
+    const ondrop = (ev) => {
+      if (!EL_drag) return;
 
-  ev.preventDefault();
+      ev.preventDefault();
 
-  const EL_targ = ev.currentTarget;
-  const EL_targClone = EL_targ.cloneNode(true);
-  const EL_dragClone = EL_drag.cloneNode(true);
+      const EL_targ = ev.currentTarget;
+      const EL_targClone = EL_targ.cloneNode(true);
+      const EL_dragClone = EL_drag.cloneNode(true);
 
-  const targCloneValue = EL_targClone.childNodes[1].firstChild.value;
-  const dragCloneValue = EL_dragClone.childNodes[1].firstChild.value;
+      const targCloneValue = EL_targClone.childNodes[1].firstChild.value;
+      const dragCloneValue = EL_dragClone.childNodes[1].firstChild.value;
 
-  EL_targ.replaceWith(EL_dragClone);
-  EL_drag.replaceWith(EL_targClone);
+      EL_targ.replaceWith(EL_dragClone);
+      EL_drag.replaceWith(EL_targClone);
 
-  EL_targClone.childNodes[1].firstChild.value = dragCloneValue;
-  EL_dragClone.childNodes[1].firstChild.value = targCloneValue;
+      EL_targClone.childNodes[1].firstChild.value = dragCloneValue;
+      EL_dragClone.childNodes[1].firstChild.value = targCloneValue;
 
-  addEvents(EL_targClone); // Reassign events to cloned element
-  addEvents(EL_dragClone); // Reassign events to cloned element
+      addEvents(EL_targClone); // Reassign events to cloned element
+      addEvents(EL_dragClone); // Reassign events to cloned element
 
-  EL_drag = undefined;
-};
+      EL_drag = undefined;
+    };
 
-ELS_child.forEach((EL_child) => addEvents(EL_child));
+    ELS_child.forEach((EL_child) => addEvents(EL_child));
 
 
 </script>

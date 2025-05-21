@@ -1,4 +1,4 @@
-package com.melancholia.educationplatform.course.step;
+package com.melancholia.educationplatform.course.step.answer;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Прохождение</title>
@@ -13,7 +14,70 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
             crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+    <style>
+        .result-container {
+          border: 1px solid #343a40;
+          border-radius: 5px;
+          background-color: #1e1e1e;
+        }
+
+        .result-output {
+          overflow-x: auto;
+          tab-size: 4;
+          line-height: 1.5;
+          font-size: 14px;
+        }
+
+        .result-output code {
+          display: block;
+          padding: 0;
+          background: transparent;
+          color: #d4d4d4;
+        }
+
+        .badge {
+          font-size: 0.75rem;
+          opacity: 0.8;
+        }
+    </style>
+    <style>
+        .console-container {
+          border: 1px solid #dee2e6;
+          border-radius: 5px;
+          overflow: hidden;
+        }
+
+        .console-header {
+          font-family: monospace;
+          font-weight: bold;
+        }
+
+        .result-output {
+          min-height: 100px;
+        }
+
+        #java-code {
+          white-space: pre;
+        }
+    </style>
+    <style>
+        .checkstyle-issues {
+            margin-top: 1rem;
+        }
+        .checkstyle-issues .list-group-item {
+            background-color: #1e1e1e;
+            color: #ffcc00;
+            border-color: #444;
+        }
+        .checkstyle-issues .list-group-item:hover {
+            background-color: #2a2a2a;
+        }
+    </style>
+
 </head>
+
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
     <a class="navbar-brand" href="/">Dingus</a>
@@ -39,15 +103,14 @@
             <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
                 <a class="nav-link" th:href="@{/group-manager}">Менеджер групп</a>
             </li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
-                <a class="nav-link" th:href="@{/analysis}">Аналитика</a>
-            </li>
+
 
         </ul>
 
         <ul sec:authorize="isAuthenticated()" class="nav navbar-nav pull-right  mr-5">
             <li class="nav-item dropdown">
-                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button"
+                   data-toggle="dropdown" aria-expanded="false">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" th:href="@{/settings}">Настройки</a>
@@ -72,7 +135,10 @@
         <div class="accordion col-3" id="accordionExample">
             <h3>Пройдено</h3>
             <div class="progress">
-                <div th:text="${userProgress.get(course.id) * 100 + '%'}" th:style="'width:' + ${userProgress.get(course.id) * 100}  + '%;'" th:attr="aria-valuenow=${userProgress.get(course.id) * 100}" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                <div th:text="${userProgress.get(course.id) * 100 + '%'}"
+                     th:style="'width:' + ${userProgress.get(course.id) * 100}  + '%;'"
+                     th:attr="aria-valuenow=${userProgress.get(course.id) * 100}" class="progress-bar"
+                     role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
             <br>
             <div th:each="accordionModule, index : ${course.modules}" class="card">
@@ -85,8 +151,8 @@
                     </h2>
                 </div>
 
-                <div th:if="${module.id} == ${accordionModule.id}" th:id="'collapse' + ${accordionModule.id}" class="collapse show"
-                     th:attr="aria-labelledby='heading' + ${accordionModule.id}"
+                <div th:if="${module.id} == ${accordionModule.id}" th:id="'collapse' + ${accordionModule.id}"
+                     class="collapse show" th:attr="aria-labelledby='heading' + ${accordionModule.id}"
                      data-parent="#accordionExample">
                     <div th:each="step, index : ${accordionModule.steps}">
                         <div class="list-group">
@@ -103,14 +169,19 @@
 
                             <a th:if=" ${step.class.simpleName} == 'TestStep'"
                                th:text="'Урок ' + ${index.index + 1} + '. Тестовый вопрос'"
+                               th:href="@{/course/{id}/passing ( id=${course.id}, moduleId=${accordionModule.id}, stepId=${step.id} ) }"
+                               class="list-group-item list-group-item-action"></a>
+
+                            <a th:if=" ${step.class.simpleName} == 'ConsoleStep'"
+                               th:text="'Урок ' + ${index.index + 1} + '. Задание с консолью'"
                                th:href="@{/course/{id}/passing ( id=${course.id}, moduleId=${accordionModule.id}, stepId=${step.id} ) }"
                                class="list-group-item list-group-item-action"></a>
 
                         </div>
                     </div>
                 </div>
-                <div th:if="${module.id} != ${accordionModule.id}" th:id="'collapse' + ${accordionModule.id}" class="collapse"
-                     th:attr="aria-labelledby='heading' + ${accordionModule.id}"
+                <div th:if="${module.id} != ${accordionModule.id}" th:id="'collapse' + ${accordionModule.id}"
+                     class="collapse" th:attr="aria-labelledby='heading' + ${accordionModule.id}"
                      data-parent="#accordionExample">
                     <div th:each="step, index : ${accordionModule.steps}">
                         <div class="list-group">
@@ -127,6 +198,11 @@
 
                             <a th:if=" ${step.class.simpleName} == 'TestStep'"
                                th:text="'Урок ' + ${index.index + 1} + '. Тестовый вопрос'"
+                               th:href="@{/course/{id}/passing ( id=${course.id}, moduleId=${accordionModule.id}, stepId=${step.id} ) }"
+                               class="list-group-item list-group-item-action"></a>
+
+                            <a th:if=" ${step.class.simpleName} == 'ConsoleStep'"
+                               th:text="'Урок ' + ${index.index + 1} + '. Задание с консолью'"
                                th:href="@{/course/{id}/passing ( id=${course.id}, moduleId=${accordionModule.id}, stepId=${step.id} ) }"
                                class="list-group-item list-group-item-action"></a>
 
@@ -141,6 +217,7 @@
             <h2 th:if=" ${step.class.simpleName} == 'InformationTextStep'" th:text="'Лекция'"></h2>
             <h2 th:if=" ${step.class.simpleName} == 'WordAnswerStep'" th:text="'Вопрос'"></h2>
             <h2 th:if=" ${step.class.simpleName} == 'TestStep'" th:text="'Тестовый вопрос'"></h2>
+            <h2 th:if=" ${step.class.simpleName} == 'ConsoleStep'" th:text="'Задание с консолью'"></h2>
             <hr>
             <div th:if="${isPassed}" th:text="'Урок пройден'" class="alert alert-success" role="alert"></div>
             <div th:if=" ${step.class.simpleName} == 'InformationTextStep'">
@@ -180,8 +257,7 @@
                 <label>Ответы</label>
 
                 <form th:action="@{/test-answer/{id}/check (id=${step.id}, courseId=${course.id}, moduleId=${module.id})}"
-                      method="post"
-                      th:object="${step}" th:if="${step.multiAnswers} == false">
+                      method="post" th:object="${step}" th:if="${step.multiAnswers} == false">
                     <input type="hidden" th:value="${step.id}" th:field="*{id}"/>
                     <input type="hidden" th:value="${step.multiAnswers}" th:field="*{multiAnswers}"/>
                     <input type="hidden" th:value="${step.question}" th:field="*{question}"/>
@@ -200,7 +276,6 @@
                     </ul>
                     <button type="submit" class="btn btn-primary col-2">Проверить ответ</button>
                 </form>
-
 
                 <form method="POST"
                       th:action="@{/test-answer-multiple/{id}/check (id=${step.id}, courseId=${course.id}, moduleId=${module.id})}"
@@ -224,6 +299,87 @@
                 </form>
 
             </div>
+
+            <div th:if="${step.class.simpleName} == 'ConsoleStep'">
+                <h4 th:text="${step.task}"></h4>
+
+                <hr>
+                <p th:if="${step.tests != null and !step.tests.empty}">
+                    <strong>Пример теста:</strong><br>
+                    Входные данные: <code th:text="${step.tests[0].input}"></code><br>
+                    Ожидаемый вывод: <code th:text="${step.tests[0].output}"></code>
+                </p>
+
+                <div class="console-container">
+                    <div class="console-header bg-dark text-white p-2">
+                        <span>Java Консоль</span>
+                    </div>
+                    <div class="console-body bg-light p-3">
+                        <form method="POST"
+                              th:action="@{/console-step/{id}/check (id=${step.id}, courseId=${course.id}, moduleId=${module.id})}">
+                            <div class="form-group">
+                                <label>Введите ваш код:</label>
+
+                                <textarea id="java-code" class="form-control code-input" rows="15" name="code"
+                                          style="font-family: monospace; tab-size: 4; white-space: pre; overflow-x: auto;"><th:block th:if="${submittedCode != null}" th:text="${submittedCode}"></th:block><th:block th:unless="${submittedCode != null}">public class Main
+{
+    public static void main(String[] args)
+    {
+        // Ваш код здесь
+        System.out.println("Hello World!");
+    }
+}
+
+</th:block></textarea>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Запустить код</button>
+                                <button type="button" class="btn btn-secondary ml-2" onclick="formatCode()">
+                                    Форматировать код
+                                </button>
+                            </div>
+                        </form>
+
+                        <div th:if="${executionResult != null}" class="execution-result mt-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="mb-0">Результат выполнения:</h5>
+                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                        onclick="copyExecutionResult()">
+                                    <i class="fas fa-copy"></i> Копировать
+                                </button>
+                            </div>
+                            <div class="result-container position-relative">
+                                <pre class="result-output p-3 bg-dark text-white rounded"
+                                     style="white-space: pre-wrap; font-family: 'Fira Code', 'Courier New', monospace; margin-bottom: 0;"
+                                     id="executionResultOutput"><code th:text="${executionResult}"></code></pre>
+                                <div class="position-absolute" style="right: 10px; top: 10px;">
+                                    <span th:if="${executionTime != null}" class="badge badge-light"
+                                          th:text="'Время: ' + ${executionTime} + 'мс'"></span>
+                                </div>
+                            </div>
+                            <div th:if="${executionError}" class="alert alert-danger mt-3" role="alert">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                <span th:text="${executionError}"></span>
+                            </div>
+                        </div>
+                        <div th:if="${checkstyleIssues != null and !checkstyleIssues.empty}"
+                             class="checkstyle-issues mt-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="mb-0">Замечания Checkstyle:</h5>
+                            </div>
+                            <div class="result-container position-relative">
+                                <ul class="list-group">
+                                    <li th:each="issue : ${checkstyleIssues}" class="list-group-item">
+                                        <span th:text="${issue}" class="text-warning"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
             <br>
             <a th:if="${nextModule ne null and nextStep ne null}"
                th:href="@{/course/{id}/passing ( id=${course.id}, moduleId=${nextModule.id}, stepId=${nextStep.id} ) }">
@@ -247,8 +403,7 @@
                         </button>
                     </h2>
                 </div>
-                <div id="collapse" class="collapse" aria-labelledby="heading"
-                     data-parent="#accordion">
+                <div id="collapse" class="collapse" aria-labelledby="heading" data-parent="#accordion">
                     <div th:each="solution, index : ${userSolutions}" class="card-body">
                         <p th:text="${solution.solutionDate}"></p>
                         <p th:text="'Ваш ответ: ' + ${solution.solutionText}"></p>
@@ -266,7 +421,8 @@
         <form th:object="${newComment}" method="POST"
               th:action="@{/comment/add/{id} (id = ${course.id}, stepId=${step.id}, moduleId=${module.id} )}">
             <div th:if="${param.commentError}">
-                <div class="alert alert-danger" th:text="'Текст комментария должен быть длинной от 1 до 100 символов'" role="alert"></div>
+                <div class="alert alert-danger" th:text="'Текст комментария должен быть длинной от 1 до 100 символов'"
+                     role="alert"></div>
             </div>
             <input type="hidden" th:field="*{id}"/>
             <div class="form-group">
@@ -296,24 +452,103 @@
 </div>
 
 <script>
-var inputs = document.getElementsByTagName("input");
-for(var i = 0; i < inputs.length; i++) {
-    if(inputs[i].name.includes('answerText')) {
-        inputs[i].checked=false;
-    }
-}
-
-function removeAll(clicked_id) {
     var inputs = document.getElementsByTagName("input");
-    for(var i = 0; i < inputs.length; i++) {
-        if(inputs[i].name.includes('answerText')) {
-            if (inputs[i].id != clicked_id){
-                inputs[i].checked=false;
-            }
+    for (var i = 0; i < inputs.length; i++) {
+      if (inputs[i].name.includes('answerText')) {
+        inputs[i].checked = false;
+      }
+    }
+
+    function removeAll(clicked_id) {
+      var inputs = document.getElementsByTagName("input");
+      for (var i = 0; i < inputs.length; i++) {
+        if (inputs[i].name.includes('answerText')) {
+          if (inputs[i].id != clicked_id) {
+            inputs[i].checked = false;
+          }
+        }
+      }
+    }
+</script>
+<script>
+    // Автоматическое форматирование отступов при вводе
+document.getElementById('java-code').addEventListener('keydown', function(e) {
+    if (e.key === 'Tab') {
+        e.preventDefault();
+        var start = this.selectionStart;
+        var end = this.selectionEnd;
+        this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+        this.selectionStart = this.selectionEnd = start + 4;
+    }
+    // Разрешаем Backspace в начале строки
+    else if (e.key === 'Backspace') {
+        var cursorPos = this.selectionStart;
+        var lineStart = this.value.lastIndexOf('\n', cursorPos - 1) + 1;
+        var beforeCursor = this.value.substring(lineStart, cursorPos);
+
+        if (/^    $/.test(beforeCursor)) {
+            this.value = this.value.substring(0, cursorPos - 4) + this.value.substring(cursorPos);
+            this.selectionStart = this.selectionEnd = cursorPos - 4;
+            e.preventDefault();
         }
     }
-}
+});
+    // Функция для базового форматирования кода
+    function formatCode() {
+    var codeArea = document.getElementById('java-code');
+    var code = codeArea.value;
+    var lines = code.split('\n');
+    var formatted = [];
+    var indent = 0;
 
+    for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
+
+        // Уменьшаем отступ после закрывающей скобки
+        if (line.includes('}')) indent = Math.max(0, indent - 1);
+
+        // Добавляем строку с текущим отступом
+        formatted.push('    '.repeat(indent) + line.trim());
+
+        // Увеличиваем отступ после открывающей скобки
+        if (line.includes('{')) indent++;
+    }
+
+    codeArea.value = formatted.join('\n');
+}
 </script>
+
+<script>
+    function copyExecutionResult() {
+      const resultText = document.getElementById('executionResultOutput').innerText;
+      navigator.clipboard.writeText(resultText).then(() => {
+        const btn = event.target.closest('button');
+        btn.innerHTML = '<i class="fas fa-check"></i> Скопировано!';
+        setTimeout(() => {
+          btn.innerHTML = '<i class="fas fa-copy"></i> Копировать';
+        }, 2000);
+      });
+    }
+    // Подсветка синтаксиса ошибок (если есть)
+    document.addEventListener('DOMContentLoaded', function() {
+      const output = document.getElementById('executionResultOutput');
+      if (output) {
+        // Подсвечиваем строки с ошибками
+        const text = output.innerText;
+        if (text.includes('Exception') || text.includes('error')) {
+          output.innerHTML = highlightErrors(text);
+        }
+      }
+    });
+
+    function highlightErrors(text) {
+      return text
+        .replace(/(Exception.*)/g, '<span class="text-danger">$1</span>')
+        .replace(/(error:.*)/gi, '<span class="text-warning">$1</span>')
+        .replace(/(at .*\(.*\))/g, '<span class="text-muted">$1</span>');
+    }
+</script>
+
 </body>
+
 </html>

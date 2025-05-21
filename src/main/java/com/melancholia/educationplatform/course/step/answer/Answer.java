@@ -1,5 +1,6 @@
-package com.melancholia.educationplatform.course.step;
+package com.melancholia.educationplatform.course.step.answer;
 
+import com.melancholia.educationplatform.course.step.Step;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -24,7 +25,7 @@ public class Answer {
     private boolean correct;
 
     @NotEmpty(message = "Текст ответа не может быть пустым")
-    @Size(min = 1, max = 50,  message = "Текст ответа должен быть длиной от 1 до 50 символов")
+    @Size(min = 1, max = 50, message = "Текст ответа должен быть длиной от 1 до 50 символов")
     @Column(name = "answer_text", nullable = false)
     private String answerText;
 

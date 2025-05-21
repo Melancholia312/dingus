@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+    <!-- Общие настройки -->
+    <property name="charset" value="UTF-8"/>
+    <property name="severity" value="warning"/>
+
+    <!-- Проверки на уровне файла -->
+    <module name="NewlineAtEndOfFile">
+        <property name="fileExtensions" value="java"/>
+        <message key="missing" value="Файл должен оканчиваться пустой строкой"/>
+    </module>
+
+    <module name="LineLength">
+        <property name="max" value="120"/>
+        <property name="fileExtensions" value="java"/>
+        <message key="maxLineLen"
+                 value="Длина строки не должна превышать {0} символов (сейчас {1})"/>
+    </module>
+
+    <!-- Проверки структуры кода -->
+    <module name="TreeWalker">
+        <!-- Импорты -->
+        <module name="AvoidStarImport">
+            <message key="import" value="Запрещены импорты через * - указывайте классы явно"/>
+        </module>
+
+        <!-- Именование -->
+        <module name="TypeName">
+            <message key="name.invalidPattern"
+                     value="Имя класса {0} должно соответствовать шаблону {1} (PascalCase)"/>
+        </module>
+
+        <module name="MethodName">
+            <message key="name.invalidPattern"
+                     value="Имя метода {0} должно соответствовать шаблону {1} (camelCase)"/>
+        </module>
+
+        <module name="LocalVariableName">
+            <message key="name.invalidPattern"
+                     value="Имя переменной {0} должно соответствовать шаблону {1} (camelCase)"/>
+        </module>
+
+        <module name="ConstantName">
+            <message key="name.invalidPattern"
+                     value="Имя константы {0} должно быть в UPPER_CASE"/>
+        </module>
+
+        <!-- Размеры методов -->
+        <module name="MethodLength">
+            <property name="max" value="50"/>
+            <message key="maxLen"
+                     value="Метод слишком длинный ({1} строк). Максимум {0} строк."/>
+        </module>
+
+        <!-- Стиль кода -->
+        <module name="EmptyBlock">
+            <message key="block.empty" value="Пустой блок кода - добавьте комментарий или логику"/>
+        </module>
+
+        <module name="NeedBraces">
+            <message key="needBraces" value="Фигурные скобки {} обязательны для всех блоков кода"/>
+        </module>
+
+        <module name="LeftCurly">
+            <property name="option" value="nl"/>
+            <message key="line.break.after"
+                     value="Фигурная скобка {{ должна начинаться с новой строки"/>
+        </module>
+
+        <module name="RightCurly">
+            <property name="option" value="alone"/>
+            <message key="line.break.before"
+                     value="Фигурная скобка }} должна быть на отдельной строке"/>
+        </module>
+
+        <!-- Комментарии -->
+        <module name="JavadocType">
+            <message key="javadoc.missing"
+                     value="Класс должен иметь Javadoc комментарий"/>
+        </module>
+
+        <module name="JavadocMethod">
+            <message key="javadoc.missing"
+                     value="Публичные методы должны иметь Javadoc комментарий"/>
+        </module>
+
+        <!-- Прочие важные проверки -->
+        <module name="MagicNumber">
+            <message key="magic.number"
+                     value="Избегайте 'магических чисел' - используйте именованные константы"/>
+        </module>
+
+        <module name="MultipleVariableDeclarations">
+            <message key="multiple.declarations"
+                     value="Объявляйте каждую переменную в отдельной строке"/>
+        </module>
+
+        <module name="UnusedImports">
+            <message key="import.unused"
+                     value="Неиспользуемый импорт: {0}"/>
+        </module>
+
+        <module name="RedundantModifier">
+            <message key="redundantModifier"
+                     value="Избыточный модификатор {0}"/>
+        </module>
+    </module>
+</module>

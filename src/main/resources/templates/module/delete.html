@@ -38,15 +38,14 @@
             <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
                 <a class="nav-link" th:href="@{/group-manager}">Менеджер групп</a>
             </li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
-                <a class="nav-link" th:href="@{/analysis}">Аналитика</a>
-            </li>
+
 
         </ul>
 
         <ul sec:authorize="isAuthenticated()" class="nav navbar-nav pull-right  mr-5">
             <li class="nav-item dropdown">
-                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button"
+                   data-toggle="dropdown" aria-expanded="false">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" th:href="@{/settings}">Настройки</a>
@@ -67,7 +66,8 @@
     </div>
 </nav>
 <div class="container">
-    <form th:object="${module}" th:action="@{/module/{id}/delete (id = ${module.id} , courseId=${module.course.id}) }" method="POST">
+    <form th:object="${module}" th:action="@{/module/{id}/delete (id = ${module.id} , courseId=${module.course.id}) }"
+          method="POST">
         <h4 th:text="${'Вы уверены что хотите удалить летучку с названием ' + module.name + '?'}"></h4>
         <br>
         <button type="submit" class="btn btn-primary col-2">Удалить</button>

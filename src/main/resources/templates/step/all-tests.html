@@ -1,20 +1,9 @@
-<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title>Настройки</title>
-    <style>
-        .hide {
-            display: none;
-        }
-
-        .show {
-            display: block;
-        }
-    </style>
+    <title>Все тесты</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
           integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
@@ -77,78 +66,39 @@
         </ul>
     </div>
 </nav>
-<div class="mask d-flex align-items-center h-100 gradient-custom-3">
-    <div class="container h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-12 col-md-9 col-lg-7 col-xl-6">
-                <div class="card" style="border-radius: 15px;">
-                    <div class="card-body p-5">
-                        <h2 class="text-center mb-5">Параметры анализа</h2>
+<div class="container">
 
-                        <form th:object="${parameters}" th:action="@{/analysis}" method="POST">
+    <h3 th:text="'Тесты к заданию с консолью ' + ${step.task} "></h3>
+    <hr/>
+    <a th:href="@{/console-step/test/add ( consoleStepId=${step.id}, courseId=${step.module.course.id} ) }"
+       class="btn btn-primary">Создать тест</a>
+    <br/><br/>
+    <table class="table table-bordered table-striped" id="testTable">
 
-                            <ul>
-                                <li th:each="option, iter : ${parameters.options}">
-                                    <input type="radio"
-                                           th:field="*{options}"
-                                           th:value="${option}" th:attr="onclick=|onLoad(${iter.index})|">
-                                    <label th:text="${option}"></label>
+        <thead>
+        <tr>
+            <th>Входные данные</th>
+            <th>Выходные данные</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="test: ${tests}">
+            <td th:text="${test.input}"></td>
+            <td th:text="${test.output}"></td>
+            <td>
+                <a th:href="@{/console-step/test/edit (consoleTestId = ${test.id}, stepId=${step.id} )}"
+                   class="btn btn-info">Редактировать</a>
+                <a th:href="@{/console-step/test/delete (consoleTestId = ${test.id}, stepId=${step.id} )}"
+                   class="btn btn-danger">Удалить</a>
+            </td>
+        </tr>
+        </tbody>
 
-                                </li>
-                            </ul>
-
-                            <hr>
-
-                            <select class="form-select hide" size="5" multiple aria-label="multiple select"
-                                    th:field="*{teachers}">
-                                <option th:each="teacher : ${parameters.teachers}" th:text="${teacher.username}"
-                                        th:value="${teacher.id}"></option>
-                            </select>
-                            <select class="form-select show" size="5" multiple aria-label="multiple select"
-                                    th:field="*{groups}">
-                                <option th:each="group : ${parameters.groups}"
-                                        th:text="${group.subGroup + '-' + group.groupName + '-' + group.courseNumber + group.groupNumber}"
-                                        th:value="${group.id}"></option>
-                            </select>
-
-                            <br>
-                            <br>
-                            <div class="d-flex justify-content-center">
-                                <button type="submit" class="btn-primary">Анализировать</button>
-                            </div>
-
-                        </form>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </table>
+    <a th:href="@{/module/{id}/steps (id = ${step.module.id} )}">Обратно к летучке</a>
 </div>
-<script>
-    function onLoad(num) {
-        if (num === 0){
-            var group1 = document.getElementById("teachers");
-            group1.classList.remove('hide');
-            group1.classList.add('show');
 
-            var group2 = document.getElementById("groups");
-            group2.classList.remove('show');
-            group2.classList.add('hide');
-        } else {
-            var group2 = document.getElementById("groups");
-            group2.classList.remove('hide');
-            group2.classList.add('show');
-
-            var group1 = document.getElementById("teachers");
-            group1.classList.remove('show');
-            group1.classList.add('hide');
-        }
-    }
-
-</script>
 </body>
 
 </html>
-
-

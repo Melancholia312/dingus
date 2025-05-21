@@ -38,15 +38,14 @@
             <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
                 <a class="nav-link" th:href="@{/group-manager}">Менеджер групп</a>
             </li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
-                <a class="nav-link" th:href="@{/analysis}">Аналитика</a>
-            </li>
+
 
         </ul>
 
         <ul sec:authorize="isAuthenticated()" class="nav navbar-nav pull-right  mr-5">
             <li class="nav-item dropdown">
-                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button"
+                   data-toggle="dropdown" aria-expanded="false">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" th:href="@{/settings}">Настройки</a>
@@ -67,14 +66,16 @@
     </div>
 </nav>
 <div class="container">
-    <form th:action="@{/test-step/answer/add (testStepId=${step.id}) }" th:object="${answer}" method="POST" enctype="multipart/form-data">
+    <form th:action="@{/test-step/answer/add (testStepId=${step.id}) }" th:object="${answer}" method="POST"
+          enctype="multipart/form-data">
         <h2 th:object="${step}" th:text="'Добавление ответа к тесту с вопросом - ' + ${step.question}"></h2>
         <hr>
         <div th:if="${#fields.hasAnyErrors()}">
             <div class="alert alert-danger" th:each="err : ${#fields.allErrors()}" th:text="${err}" role="alert"></div>
         </div>
         <input type="hidden" th:field="*{id}"/>
-        <input type="text" th:field="*{answerText}" class="form-control col-4 mb-4" placeholder="Текст ответа" />
+        <label>Текст ответа</label>
+        <input type="text" th:field="*{answerText}" class="form-control col-4 mb-4" placeholder="Текст ответа"/>
         <hr>
 
         <p>Верный</p>
@@ -89,7 +90,7 @@
     </form>
 
     <hr/>
-    <a th:href="@{/test-step/{id}/answers ( id=${step.id} ) }">Обратно ко всем ответам</a>
+    <a th:href="@{/test-step/{id}/answers ( id=${step.id} ) }">Обратно к ответам</a>
 </div>
 
 </body>

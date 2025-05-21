@@ -39,15 +39,14 @@
             <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
                 <a class="nav-link" th:href="@{/group-manager}">Менеджер групп</a>
             </li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
-                <a class="nav-link" th:href="@{/analysis}">Аналитика</a>
-            </li>
+
 
         </ul>
 
         <ul sec:authorize="isAuthenticated()" class="nav navbar-nav pull-right  mr-5">
             <li class="nav-item dropdown">
-                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button"
+                   data-toggle="dropdown" aria-expanded="false">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" th:href="@{/settings}">Настройки</a>
@@ -78,6 +77,8 @@
        class="btn btn-primary">Добавить вопрос</a>
     <a th:href="@{/step/add (moduleId = ${module.id}, type='test-step') }"
        class="btn btn-primary">Добавить тестовый вопрос</a>
+    <a th:href="@{/step/add (moduleId = ${module.id}, type='console-step') }"
+       class="btn btn-primary">Добавить задание с консолью</a>
     <br/><br/>
 
     <form th:action="@{/steps/switch ( moduleId=${module.id} )}" th:object="${steps}"
@@ -112,6 +113,9 @@
                     <input th:if=" ${step.class.simpleName} == 'TestStep' " type="hidden"
                            th:field="*{steps[__${itemStat.index}__].multiAnswers}"/>
 
+                    <input th:if=" ${step.class.simpleName} == 'ConsoleStep' " type="hidden"
+                           th:field="*{steps[__${itemStat.index}__].task}"/>
+
 
                 <td th:switch="${step.class.simpleName}">
                     <p th:case=" 'InformationTextStep' ">Лекция</p>
@@ -121,6 +125,7 @@
                      правильными варинтами ответа' :
                     'Тестовый вопрос с одним
                      правильным варинтом ответа'}" th:case=" 'TestStep' ">
+                    <p th:case=" 'ConsoleStep' ">Задание с консолью</p>
 
                 </td>
 
@@ -128,6 +133,7 @@
                     <p th:case=" 'InformationTextStep' " th:text="${step.name}"></p>
                     <p th:case=" 'WordAnswerStep' " th:text="${step.question}"></p>
                     <p th:case=" 'TestStep' " th:text="${step.question}"></p>
+                    <p th:case=" 'ConsoleStep' " th:text="${step.task}"></p>
                 </td>
 
                 <td th:switch="${step.class.simpleName}">
@@ -142,6 +148,16 @@
                         <br>
                         <a th:href="@{/test-step/answer/add (testStepId=${step.id}) }"
                            class="btn btn-primary">Добавить ответы</a>
+                    </span>
+
+                    <span th:case=" 'ConsoleStep' ">
+                        <p th:text="'Количество тестов - ' + ${step.tests.size()}"></p>
+                        <hr>
+                        <a th:href="@{/console-step/{id}/tests (id=${step.id}) }" class="btn btn-primary">Посмотреть тесты</a>
+                        <br>
+                        <br>
+                        <a th:href="@{/console-step/test/add (consoleStepId=${step.id}) }"
+                           class="btn btn-primary">Добавить тесты</a>
                     </span>
 
                 </td>
@@ -168,51 +184,45 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.js"></script>
 <script>
-const ELS = (sel, par) => (par || document).querySelectorAll(sel);
-const ELS_child = ELS(".float-child");
+    const ELS = (sel, par) => (par || document).querySelectorAll(sel);
+    const ELS_child = ELS(".float-child");
 
-let EL_drag; // Used to remember the dragged element
+    let EL_drag; // Used to remember the dragged element
 
-const addEvents = (EL_ev) => {
-  EL_ev.setAttribute("draggable", "true");
-  EL_ev.addEventListener("dragstart", onstart);
-  EL_ev.addEventListener("dragover", (ev) => ev.preventDefault());
-  EL_ev.addEventListener("drop", ondrop);
-};
+    const addEvents = (EL_ev) => {
+      EL_ev.setAttribute("draggable", "true");
+      EL_ev.addEventListener("dragstart", onstart);
+      EL_ev.addEventListener("dragover", (ev) => ev.preventDefault());
+      EL_ev.addEventListener("drop", ondrop);
+    };
 
-const onstart = (ev) => EL_drag = ev.currentTarget;
+    const onstart = (ev) => EL_drag = ev.currentTarget;
 
-const ondrop = (ev) => {
-  if (!EL_drag) return;
+    const ondrop = (ev) => {
+      if (!EL_drag) return;
 
-  ev.preventDefault();
+      ev.preventDefault();
 
-  const EL_targ = ev.currentTarget;
-  const EL_targClone = EL_targ.cloneNode(true);
-  const EL_dragClone = EL_drag.cloneNode(true);
+      const EL_targ = ev.currentTarget;
+      const EL_targClone = EL_targ.cloneNode(true);
+      const EL_dragClone = EL_drag.cloneNode(true);
 
-  const targCloneValue = EL_targClone.childNodes[1].childNodes[1].value;
-  const dragCloneValue = EL_dragClone.childNodes[1].childNodes[1].value;
+      const targCloneValue = EL_targClone.childNodes[1].childNodes[1].value;
+      const dragCloneValue = EL_dragClone.childNodes[1].childNodes[1].value;
 
-  EL_targ.replaceWith(EL_dragClone);
-  EL_drag.replaceWith(EL_targClone);
+      EL_targ.replaceWith(EL_dragClone);
+      EL_drag.replaceWith(EL_targClone);
 
-  EL_targClone.childNodes[1].childNodes[1].value = dragCloneValue;
-  EL_dragClone.childNodes[1].childNodes[1].value = targCloneValue;
+      EL_targClone.childNodes[1].childNodes[1].value = dragCloneValue;
+      EL_dragClone.childNodes[1].childNodes[1].value = targCloneValue;
 
-  addEvents(EL_targClone); // Reassign events to cloned element
-  addEvents(EL_dragClone); // Reassign events to cloned element
+      addEvents(EL_targClone); // Reassign events to cloned element
+      addEvents(EL_dragClone); // Reassign events to cloned element
 
-  EL_drag = undefined;
-};
+      EL_drag = undefined;
+    };
 
-ELS_child.forEach((EL_child) => addEvents(EL_child));
-
-
-
-
-
-
+    ELS_child.forEach((EL_child) => addEvents(EL_child));
 
 
 </script>

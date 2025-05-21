@@ -38,15 +38,14 @@
             <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
                 <a class="nav-link" th:href="@{/group-manager}">Менеджер групп</a>
             </li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
-                <a class="nav-link" th:href="@{/analysis}">Аналитика</a>
-            </li>
+
 
         </ul>
 
         <ul sec:authorize="isAuthenticated()" class="nav navbar-nav pull-right  mr-5">
             <li class="nav-item dropdown">
-                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button"
+                   data-toggle="dropdown" aria-expanded="false">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" th:href="@{/settings}">Настройки</a>
@@ -67,17 +66,18 @@
     </div>
 </nav>
 <div class="container">
-    <form th:action="@{/test-step/answer/add (testStepId=${step.id} ) }" th:object="${answer}" method="POST" enctype="multipart/form-data">
+    <form th:action="@{/test-step/answer/add (testStepId=${step.id} ) }" th:object="${answer}" method="POST"
+          enctype="multipart/form-data">
         <h2 th:text="'Изменение ответа вопроса - ' + ${step.question}"></h2>
         <hr>
         <div th:if="${#fields.hasAnyErrors()}">
             <div class="alert alert-danger" th:each="err : ${#fields.allErrors()}" th:text="${err}" role="alert"></div>
         </div>
         <input type="hidden" th:field="*{id}"/>
-        <input type="hidden" th:field="*{testStep.id}" />
+        <input type="hidden" th:field="*{testStep.id}"/>
 
         <label>Текст ответа</label>
-        <input type="text" th:field="*{answerText}" class="form-control col-4 mb-4" placeholder="Текст ответа" />
+        <input type="text" th:field="*{answerText}" class="form-control col-4 mb-4" placeholder="Текст ответа"/>
         <hr>
 
         <label for="file">Изменить изображение</label>
@@ -85,7 +85,7 @@
         <hr>
 
         <h4 th:if="${answer.image ne null}">Загруженное изображение</h4>
-        <img th:if="${answer.image ne null}" th:src="@{'/uploads/' + ${answer.image} }" />
+        <img th:if="${answer.image ne null}" th:src="@{'/uploads/' + ${answer.image} }"/>
         <hr>
 
         <p>Верный</p>

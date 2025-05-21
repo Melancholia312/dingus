@@ -38,15 +38,13 @@
             <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
                 <a class="nav-link" th:href="@{/group-manager}">Менеджер групп</a>
             </li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
-                <a class="nav-link" th:href="@{/analysis}">Аналитика</a>
-            </li>
 
         </ul>
 
         <ul sec:authorize="isAuthenticated()" class="nav navbar-nav pull-right  mr-5">
             <li class="nav-item dropdown">
-                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button"
+                   data-toggle="dropdown" aria-expanded="false">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" th:href="@{/settings}">Настройки</a>
@@ -68,15 +66,16 @@
 </nav>
 <div class="container">
 
-    <form th:action="@{/step/add-word-answer (moduleId=${step.module.id}) }" th:object="${step}" method="POST" enctype="multipart/form-data">
+    <form th:action="@{/step/add-word-answer (moduleId=${step.module.id}) }" th:object="${step}" method="POST"
+          enctype="multipart/form-data">
         <h2 th:text="${'Редактирование урока летучки - ' + step.module.name}"></h2>
         <hr>
         <div th:if="${#fields.hasAnyErrors()}">
             <div class="alert alert-danger" th:each="err : ${#fields.allErrors()}" th:text="${err}" role="alert"></div>
         </div>
-        <input type="hidden" th:field="*{id}" />
-        <input type="hidden" th:field="*{stepNumber}" />
-        <input type="hidden" th:field="*{module.id}" />
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{stepNumber}"/>
+        <input type="hidden" th:field="*{module.id}"/>
 
         <label>Вопрос</label>
         <input th:field="*{question}" class="form-control col-4 mb-4" placeholder="Вопрос">
@@ -87,7 +86,7 @@
         <hr>
 
         <h4 th:if="${step.image ne null}">Загруженное изображение</h4>
-        <img th:if="${step.image ne null}" th:src="@{'/uploads/' + ${step.image} }" />
+        <img th:if="${step.image ne null}" th:src="@{'/uploads/' + ${step.image} }"/>
         <hr th:if="${step.image ne null}">
 
         <label>Ответ</label>

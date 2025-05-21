@@ -38,15 +38,14 @@
             <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
                 <a class="nav-link" th:href="@{/group-manager}">Менеджер групп</a>
             </li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
-                <a class="nav-link" th:href="@{/analysis}">Аналитика</a>
-            </li>
+
 
         </ul>
 
         <ul sec:authorize="isAuthenticated()" class="nav navbar-nav pull-right  mr-5">
             <li class="nav-item dropdown">
-                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button"
+                   data-toggle="dropdown" aria-expanded="false">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" th:href="@{/settings}">Настройки</a>
@@ -73,7 +72,7 @@
         <div th:if="${#fields.hasAnyErrors()}">
             <div class="alert alert-danger" th:each="err : ${#fields.allErrors()}" th:text="${err}" role="alert"></div>
         </div>
-        <input type="text" th:field="*{name}" class="form-control col-4 mb-4" placeholder="Название" />
+        <input type="text" th:field="*{name}" class="form-control col-4 mb-4" placeholder="Название"/>
         <button type="submit" class="btn btn-primary col-2">Сохранить</button>
 
     </form>

@@ -39,15 +39,14 @@
             <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
                 <a class="nav-link" th:href="@{/group-manager}">Менеджер групп</a>
             </li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
-                <a class="nav-link" th:href="@{/analysis}">Аналитика</a>
-            </li>
+
 
         </ul>
 
         <ul sec:authorize="isAuthenticated()" class="nav navbar-nav pull-right  mr-5">
             <li class="nav-item dropdown">
-                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button"
+                   data-toggle="dropdown" aria-expanded="false">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" th:href="@{/settings}">Настройки</a>
@@ -83,7 +82,8 @@
                                     th:text="'Летучек в курсе: ' + ${checklist.modulesCount} + ' ✅'"></li>
                                 <br th:if="${checklist.modulesRequired} > ${checklist.modulesCount}">
                                 <a th:if="${checklist.modulesRequired} > ${checklist.modulesCount}"
-                                   th:href="@{/module/add (courseId=${checklist.courseId})}" class="btn btn-primary">Добавить летучку</a>
+                                   th:href="@{/module/add (courseId=${checklist.courseId})}" class="btn btn-primary">Добавить
+                                    летучку</a>
                             </ul>
                         </div>
                         <hr>
@@ -96,7 +96,8 @@
                                     th:text="'Летучка ' + ${module.key.name} + ': ' + ${module.key.steps.size()} + ' ❌'"></li>
                                 <br th:if="${!module.value}">
                                 <a th:if="${!module.value}"
-                                   th:href="@{/module/{id}/steps (id=${module.key.id})}" class="btn btn-primary">Добавить урок</a>
+                                   th:href="@{/module/{id}/steps (id=${module.key.id})}" class="btn btn-primary">Добавить
+                                    урок</a>
                             </ul>
                         </div>
                         <hr>
@@ -119,18 +120,22 @@
                                         th:if="${step.key.multiAnswers and step.key.answers.size() > 1 and step.value >= 1}"
                                         th:text="'Тестовый урок с вопросом ' + '*' + ${step.key.question} + '*' + ' с несколькими варинтами ответов ✅
                                         (Правильных - ' + ${step.value} + ' | Общее количество ответов - ' + ${step.key.answers.size()} + ')'"></li>
-                                    <a th:href="@{/test-step/{id}/answers (id=${step.key.id})}"><li style="white-space: pre-line"
-                                        th:if="${step.key.multiAnswers and (step.key.answers.size() <= 1 or step.value == 0)}"
-                                        th:text="'Тестовый урок с вопросом ' + '*' + ${step.key.question} + '*' + ' с несколькими варинтами ответов ❌
-                                         (Правильных - ' + ${step.value} + ' | Общее количество ответов - ' + ${step.key.answers.size()} + ')'"></li></a>
+                                    <a th:href="@{/test-step/{id}/answers (id=${step.key.id})}">
+                                        <li style="white-space: pre-line"
+                                            th:if="${step.key.multiAnswers and (step.key.answers.size() <= 1 or step.value == 0)}"
+                                            th:text="'Тестовый урок с вопросом ' + '*' + ${step.key.question} + '*' + ' с несколькими варинтами ответов ❌
+                                         (Правильных - ' + ${step.value} + ' | Общее количество ответов - ' + ${step.key.answers.size()} + ')'"></li>
+                                    </a>
                                     <li style="white-space: pre-line"
                                         th:if="${!step.key.multiAnswers and step.key.answers.size() > 1 and step.value == 1}"
                                         th:text="'Тестовый урок с вопросом ' + '*' + ${step.key.question} + '*' + ' с одним вариантом ответа ✅
                                         (Правильных - ' + ${step.value} + ' | Общее количество ответов - ' + ${step.key.answers.size()} + ')'"></li>
-                                    <a th:href="@{/test-step/{id}/answers (id=${step.key.id})}"><li style="white-space: pre-line"
-                                        th:if="${!step.key.multiAnswers and (step.key.answers.size() <= 1 or step.value != 1)}"
-                                        th:text="'Тестовый урок с вопросом ' + '*' + ${step.key.question} + '*' + ' с одним вариантом ответа ❌
-                                        (Правильных - ' + ${step.value} + ' | Общее количество ответов - ' + ${step.key.answers.size()} + ')'"></li></a>
+                                    <a th:href="@{/test-step/{id}/answers (id=${step.key.id})}">
+                                        <li style="white-space: pre-line"
+                                            th:if="${!step.key.multiAnswers and (step.key.answers.size() <= 1 or step.value != 1)}"
+                                            th:text="'Тестовый урок с вопросом ' + '*' + ${step.key.question} + '*' + ' с одним вариантом ответа ❌
+                                        (Правильных - ' + ${step.value} + ' | Общее количество ответов - ' + ${step.key.answers.size()} + ')'"></li>
+                                    </a>
                                 </ul>
                             </div>
                         </div>

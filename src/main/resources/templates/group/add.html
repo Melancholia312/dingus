@@ -39,15 +39,14 @@
             <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
                 <a class="nav-link" th:href="@{/group-manager}">Менеджер групп</a>
             </li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
-                <a class="nav-link" th:href="@{/analysis}">Аналитика</a>
-            </li>
+
 
         </ul>
 
         <ul sec:authorize="isAuthenticated()" class="nav navbar-nav pull-right  mr-5">
             <li class="nav-item dropdown">
-                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button"
+                   data-toggle="dropdown" aria-expanded="false">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" th:href="@{/settings}">Настройки</a>
@@ -77,16 +76,16 @@
         <input type="hidden" th:field="*{id}"/>
 
         <label>Название подгруппы</label>
-        <input type="text" th:field="*{subGroup}" class="form-control col-4 mb-4" placeholder="Название подгруппы" />
+        <input type="text" th:field="*{subGroup}" class="form-control col-4 mb-4" placeholder="Название подгруппы"/>
 
         <label>Название группы</label>
-        <input type="text" th:field="*{groupName}" class="form-control col-4 mb-4" placeholder="Название группы" />
+        <input type="text" th:field="*{groupName}" class="form-control col-4 mb-4" placeholder="Название группы"/>
 
         <label>Номер курса</label>
-        <input type="number" th:field="*{courseNumber}" class="form-control col-4 mb-4" placeholder="Номер курса" />
+        <input type="number" th:field="*{courseNumber}" class="form-control col-4 mb-4" placeholder="Номер курса"/>
 
         <label>Номер группы</label>
-        <input type="number" th:field="*{groupNumber}" class="form-control col-4 mb-4" placeholder="Номер группы" />
+        <input type="number" th:field="*{groupNumber}" class="form-control col-4 mb-4" placeholder="Номер группы"/>
 
         <button type="submit" class="btn btn-primary col-2">Сохранить</button>
     </form>

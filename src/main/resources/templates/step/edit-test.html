@@ -1,20 +1,9 @@
-<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title>Настройки</title>
-    <style>
-        .hide {
-            display: none;
-        }
-
-        .show {
-            display: block;
-        }
-    </style>
+    <title>Редактировать тест</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
           integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
@@ -24,7 +13,6 @@
             integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
             crossorigin="anonymous"></script>
 </head>
-
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
     <a class="navbar-brand" href="/">Dingus</a>
@@ -77,78 +65,28 @@
         </ul>
     </div>
 </nav>
-<div class="mask d-flex align-items-center h-100 gradient-custom-3">
-    <div class="container h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-12 col-md-9 col-lg-7 col-xl-6">
-                <div class="card" style="border-radius: 15px;">
-                    <div class="card-body p-5">
-                        <h2 class="text-center mb-5">Параметры анализа</h2>
-
-                        <form th:object="${parameters}" th:action="@{/analysis}" method="POST">
-
-                            <ul>
-                                <li th:each="option, iter : ${parameters.options}">
-                                    <input type="radio"
-                                           th:field="*{options}"
-                                           th:value="${option}" th:attr="onclick=|onLoad(${iter.index})|">
-                                    <label th:text="${option}"></label>
-
-                                </li>
-                            </ul>
-
-                            <hr>
-
-                            <select class="form-select hide" size="5" multiple aria-label="multiple select"
-                                    th:field="*{teachers}">
-                                <option th:each="teacher : ${parameters.teachers}" th:text="${teacher.username}"
-                                        th:value="${teacher.id}"></option>
-                            </select>
-                            <select class="form-select show" size="5" multiple aria-label="multiple select"
-                                    th:field="*{groups}">
-                                <option th:each="group : ${parameters.groups}"
-                                        th:text="${group.subGroup + '-' + group.groupName + '-' + group.courseNumber + group.groupNumber}"
-                                        th:value="${group.id}"></option>
-                            </select>
-
-                            <br>
-                            <br>
-                            <div class="d-flex justify-content-center">
-                                <button type="submit" class="btn-primary">Анализировать</button>
-                            </div>
-
-                        </form>
-
-                    </div>
-                </div>
-            </div>
+<div class="container">
+    <form th:action="@{/console-step/test/add (consoleStepId=${step.id} ) }" th:object="${test}" method="POST">
+        <h2 th:text="'Изменение те вопроса - ' + ${step.task}"></h2>
+        <hr>
+        <div th:if="${#fields.hasAnyErrors()}">
+            <div class="alert alert-danger" th:each="err : ${#fields.allErrors()}" th:text="${err}" role="alert"></div>
         </div>
-    </div>
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{consoleStep.id}"/>
+
+        <label>Входные данные</label>
+        <input type="text" th:field="*{input}" class="form-control col-4 mb-4" placeholder="Входные данные"/>
+        <label>Выходные данные</label>
+        <input type="text" th:field="*{output}" class="form-control col-4 mb-4" placeholder="Выходные данные"/>
+        <hr>
+
+        <button type="submit" class="btn btn-primary col-2">Сохранить</button>
+    </form>
+
+    <hr/>
+    <a th:href="@{/console-step/{id}/tests ( id=${step.id} ) }">Обратно к тестам</a>
 </div>
-<script>
-    function onLoad(num) {
-        if (num === 0){
-            var group1 = document.getElementById("teachers");
-            group1.classList.remove('hide');
-            group1.classList.add('show');
 
-            var group2 = document.getElementById("groups");
-            group2.classList.remove('show');
-            group2.classList.add('hide');
-        } else {
-            var group2 = document.getElementById("groups");
-            group2.classList.remove('hide');
-            group2.classList.add('show');
-
-            var group1 = document.getElementById("teachers");
-            group1.classList.remove('show');
-            group1.classList.add('hide');
-        }
-    }
-
-</script>
 </body>
-
 </html>
-
-

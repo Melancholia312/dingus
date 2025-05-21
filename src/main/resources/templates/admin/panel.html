@@ -39,15 +39,14 @@
             <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
                 <a class="nav-link" th:href="@{/group-manager}">Менеджер групп</a>
             </li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
-                <a class="nav-link" th:href="@{/analysis}">Аналитика</a>
-            </li>
+
 
         </ul>
 
         <ul sec:authorize="isAuthenticated()" class="nav navbar-nav pull-right  mr-5">
             <li class="nav-item dropdown">
-                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button"
+                   data-toggle="dropdown" aria-expanded="false">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" th:href="@{/settings}">Настройки</a>
@@ -70,45 +69,50 @@
 <div class="container">
     <h2>Административная панель</h2>
     <br/>
-        <table class="table table-bordered table-striped" id="adminTable">
-            <thead>
-            <tr>
-                <th>Имя пользователя</th>
-                <th>Email</th>
-                <th>Группа</th>
-                <th>Действия</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="user : *{users}" class="float-child" th:if="${#authentication.principal.username != user.username}">
-                <td th:text="${user.username}"> </td>
-                <td th:text="${user.email}"> </td>
-                <td th:if="${user.group ne null}" th:text="${user.group.subGroup + '-' + user.group.groupName + '-' + user.group.courseNumber + user.group.groupNumber}"> </td>
-                <td th:unless="${user.group ne null}" th:text="${'Группа не указана'}"> </td>
+    <table class="table table-bordered table-striped" id="adminTable">
+        <thead>
+        <tr>
+            <th>Имя пользователя</th>
+            <th>Email</th>
+            <th>Группа</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : *{users}" class="float-child"
+            th:if="${#authentication.principal.username != user.username}">
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:if="${user.group ne null}"
+                th:text="${user.group.subGroup + '-' + user.group.groupName + '-' + user.group.courseNumber + user.group.groupNumber}"></td>
+            <td th:unless="${user.group ne null}" th:text="${'Группа не указана'}"></td>
 
-                <td>
-                    <a th:if="${user.isTeacher}" th:href="@{/user/{id}/remove-teacher (id = ${user.id})}" class="btn btn-danger">Снять с преподавания</a>
-                    <a th:if="${!user.isTeacher}" th:href="@{/user/{id}/make-teacher (id = ${user.id})}" class="btn btn-warning">Сделать преподавателем</a>
-                    <a th:if="${user.enabled}" th:href="@{/user/{id}/ban (id = ${user.id})}" class="btn btn-danger">Забанить</a>
-                    <a th:if="${!user.enabled}" th:href="@{/user/{id}/unban (id = ${user.id})}" class="btn btn-warning">Разбанить</a>
-                </td>
+            <td>
+                <a th:if="${user.isTeacher}" th:href="@{/user/{id}/remove-teacher (id = ${user.id})}"
+                   class="btn btn-danger">Снять с преподавания</a>
+                <a th:if="${!user.isTeacher}" th:href="@{/user/{id}/make-teacher (id = ${user.id})}"
+                   class="btn btn-warning">Сделать преподавателем</a>
+                <a th:if="${user.enabled}" th:href="@{/user/{id}/ban (id = ${user.id})}"
+                   class="btn btn-danger">Забанить</a>
+                <a th:if="${!user.enabled}" th:href="@{/user/{id}/unban (id = ${user.id})}" class="btn btn-warning">Разбанить</a>
+            </td>
 
-            </tr>
-            </tbody>
-        </table>
+        </tr>
+        </tbody>
+    </table>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.js"></script>
 </body>
 <script>
-			$(document).ready(function() {
-				$("#adminTable").DataTable({
-						'aoColumnDefs': [{
-        				'bSortable': false,
-        				'aTargets': [-1] /* 1st one, start by the right */
-    				}]
-				});
-			})
-		</script>
+    $(document).ready(function() {
+        $("#adminTable").DataTable({
+                'aoColumnDefs': [{
+                'bSortable': false,
+                'aTargets': [-1] /* 1st one, start by the right */
+            }]
+        });
+    })
+</script>
 </html>

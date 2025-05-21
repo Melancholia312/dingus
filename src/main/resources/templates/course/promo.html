@@ -40,15 +40,14 @@
             <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
                 <a class="nav-link" th:href="@{/group-manager}">Менеджер групп</a>
             </li>
-            <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
-                <a class="nav-link" th:href="@{/analysis}">Аналитика</a>
-            </li>
+
 
         </ul>
 
         <ul sec:authorize="isAuthenticated()" class="nav navbar-nav pull-right  mr-5">
             <li class="nav-item dropdown">
-                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                <a sec:authentication="name" class="nav-link dropdown-toggle" href="#" role="button"
+                   data-toggle="dropdown" aria-expanded="false">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" th:href="@{/settings}">Настройки</a>
@@ -77,8 +76,9 @@
     <form th:if="${isMember} == false" th:action="@{/course/{id}/enroll (id=${course.id})}" method="POST">
         <button type="submit" class="btn btn-outline-success float-right">Записаться на курс</button>
     </form>
-    <a th:href="@{/course/{id}/passing ( id=${course.id}, moduleId=${firstModuleId}, stepId=${firstStepId} ) }" th:if="${isMember} == true">
-        <button  type="button" class="btn btn-outline-primary float-right">Начать проходить
+    <a th:href="@{/course/{id}/passing ( id=${course.id}, moduleId=${firstModuleId}, stepId=${firstStepId} ) }"
+       th:if="${isMember} == true">
+        <button type="button" class="btn btn-outline-primary float-right">Начать проходить
         </button>
     </a>
     <br>
@@ -126,6 +126,8 @@
                               th:case="'WordAnswerStep'"> </span>
                         <span class="card-body" th:text="'Количество Тестовых Вопросов - ' + ${mapEntry.value}"
                               th:case="'TestStep'"> </span>
+                        <span class="card-body" th:text="'Количество Заданий С Консолью - ' + ${mapEntry.value}"
+                              th:case="'ConsoleStep'"> </span>
                     </div>
                 </div>
                 <div class="card-body" th:text="'Общее количество уроков - ' + ${#lists.size(module.steps)}">
@@ -136,12 +138,14 @@
     <hr th:if="${isMember} == true">
     <h2 th:if="${isMember} == true" style="text-align:center;">Оставить отзыв</h2>
     <hr th:if="${isMember} == true">
-    <form th:if="${isMember} == true" th:object="${review}" method="POST" th:action="@{/review/add/{id} (id = ${course.id})}">
+    <form th:if="${isMember} == true" th:object="${review}" method="POST"
+          th:action="@{/review/add/{id} (id = ${course.id})}">
         <div th:if="${param.stars}">
             <div class="alert alert-danger" th:text="'Выберите количество звезд'" role="alert"></div>
         </div>
         <div th:if="${param.reviewText}">
-            <div class="alert alert-danger" th:text="'Текст отзыва не должнен превышать 100 символов'" role="alert"></div>
+            <div class="alert alert-danger" th:text="'Текст отзыва не должнен превышать 100 символов'"
+                 role="alert"></div>
         </div>
         <input type="hidden" th:field="*{id}"/>
         <div class="form-group">
@@ -163,7 +167,8 @@
     <div th:each="review : ${course.reviews}">
         <div class="card">
             <div class="card-header">
-                <span th:each="i: ${#numbers.sequence(1, 5)}" th:text="${i <= review.stars} ? '&#9733' : '&#9734' "></span>
+                <span th:each="i: ${#numbers.sequence(1, 5)}"
+                      th:text="${i <= review.stars} ? '&#9733' : '&#9734' "></span>
             </div>
             <div class="card-body">
                 <blockquote class="blockquote mb-0">
