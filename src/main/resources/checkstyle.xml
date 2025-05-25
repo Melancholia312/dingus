@@ -25,7 +25,19 @@
     <module name="TreeWalker">
         <!-- Импорты -->
         <module name="AvoidStarImport">
-            <message key="import" value="Запрещены импорты через * - указывайте классы явно"/>
+            <message key="import.avoidStar"
+                     value="Строка {0}: Запрещены импорты через * - указывайте классы явно"/>
+        </module>
+        <module name="UnusedImports">
+            <message key="import.unused" value="Неиспользуемый импорт: {0}"/>
+        </module>
+        <module name="RedundantImport">
+            <message key="import.redundant" value="Избыточный импорт: {0}"/>
+        </module>
+        <module name="ImportOrder">
+            <property name="groups" value="java,javax,org,com"/>
+            <property name="ordered" value="true"/>
+            <message key="import.ordering" value="Импорты должны быть упорядочены: java, javax, org, com"/>
         </module>
 
         <!-- Именование -->
@@ -33,48 +45,48 @@
             <message key="name.invalidPattern"
                      value="Имя класса {0} должно соответствовать шаблону {1} (PascalCase)"/>
         </module>
-
         <module name="MethodName">
             <message key="name.invalidPattern"
                      value="Имя метода {0} должно соответствовать шаблону {1} (camelCase)"/>
         </module>
-
         <module name="LocalVariableName">
             <message key="name.invalidPattern"
                      value="Имя переменной {0} должно соответствовать шаблону {1} (camelCase)"/>
         </module>
-
+        <module name="ParameterName">
+            <message key="name.invalidPattern"
+                     value="Имя параметра {0} должно соответствовать шаблону {1} (camelCase)"/>
+        </module>
         <module name="ConstantName">
             <message key="name.invalidPattern"
                      value="Имя константы {0} должно быть в UPPER_CASE"/>
         </module>
 
-        <!-- Размеры методов -->
+        <!-- Размеры методов и классов -->
         <module name="MethodLength">
-            <property name="max" value="50"/>
+            <property name="max" value="30"/>
             <message key="maxLen"
                      value="Метод слишком длинный ({1} строк). Максимум {0} строк."/>
+        </module>
+        <module name="AnonInnerLength">
+            <property name="max" value="20"/>
+            <message key="maxLen.anonInner"
+                     value="Анонимный класс слишком длинный ({1} строк). Максимум {0} строк."/>
         </module>
 
         <!-- Стиль кода -->
         <module name="EmptyBlock">
             <message key="block.empty" value="Пустой блок кода - добавьте комментарий или логику"/>
         </module>
-
         <module name="NeedBraces">
-            <message key="needBraces" value="Фигурные скобки {} обязательны для всех блоков кода"/>
+            <message key="needBraces" value="Требуются фигурные скобки"/>
         </module>
-
-        <module name="LeftCurly">
-            <property name="option" value="nl"/>
-            <message key="line.break.after"
-                     value="Фигурная скобка {{ должна начинаться с новой строки"/>
+        <module name="WhitespaceAround">
+            <message key="ws.notFollowed" value="Пробел после оператора обязателен"/>
+            <message key="ws.notPreceded" value="Пробел перед оператором обязателен"/>
         </module>
-
-        <module name="RightCurly">
-            <property name="option" value="alone"/>
-            <message key="line.break.before"
-                     value="Фигурная скобка }} должна быть на отдельной строке"/>
+        <module name="OneStatementPerLine">
+            <message key="one.statement.per.line" value="Только одно выражение на строку"/>
         </module>
 
         <!-- Комментарии -->
@@ -83,30 +95,67 @@
                      value="Класс должен иметь Javadoc комментарий"/>
         </module>
 
-        <module name="JavadocMethod">
-            <message key="javadoc.missing"
-                     value="Публичные методы должны иметь Javadoc комментарий"/>
+        <!-- Принципы ООП -->
+        <module name="VisibilityModifier">
+            <property name="publicMemberPattern" value="^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"/>
+            <message key="visibility.public" value="Публичные поля запрещены (кроме констант) - строка {0}"/>
+        </module>
+        <module name="DesignForExtension">
+            <message key="design.forExtension"
+                     value="Публичные не-final методы должны быть либо абстрактными, либо содержать реализацию"/>
+        </module>
+        <module name="FinalClass">
+            <message key="final.class" value="Классы без наследников должны быть final"/>
+        </module>
+        <module name="InterfaceIsType">
+            <message key="interface.is.type" value="Интерфейсы должны определять тип, а не константы"/>
         </module>
 
         <!-- Прочие важные проверки -->
         <module name="MagicNumber">
+            <property name="ignoreNumbers" value="-1, 0, 1, 2"/>
             <message key="magic.number"
                      value="Избегайте 'магических чисел' - используйте именованные константы"/>
         </module>
-
         <module name="MultipleVariableDeclarations">
             <message key="multiple.declarations"
-                     value="Объявляйте каждую переменную в отдельной строке"/>
+                     value="Ошибка (строка {0}): Каждая переменная должна объявляться в отдельной строке"/>
         </module>
-
-        <module name="UnusedImports">
-            <message key="import.unused"
-                     value="Неиспользуемый импорт: {0}"/>
-        </module>
-
         <module name="RedundantModifier">
             <message key="redundantModifier"
                      value="Избыточный модификатор {0}"/>
+        </module>
+        <module name="AvoidInlineConditionals">
+            <message key="avoid.inline.conditionals"
+                     value="Избегайте тернарных операторов в сложных выражениях"/>
+        </module>
+        <module name="NestedIfDepth">
+            <property name="max" value="3"/>
+            <message key="nested.if.depth"
+                     value="Слишком глубокая вложенность if ({1}). Максимум {0}."/>
+        </module>
+        <module name="CyclomaticComplexity">
+            <property name="max" value="10"/>
+            <message key="cyclomatic.complexity"
+                     value="Слишком высокая цикломатическая сложность метода ({1}). Максимум {0}."/>
+        </module>
+        <module name="EmptyForIteratorPad">
+            <message key="ws.followed"
+                     value="Требуется пробел после ';' в for-цикле"/>
+        </module>
+
+        <module name="ArrayTypeStyle">
+            <message key="array.type.style"
+                     value="Используйте 'тип[] имя' вместо 'тип имя[]'"/>
+        </module>
+        <module name="MethodParamPad">
+            <message key="ws.preceded"
+                     value="Требуется пробел перед параметром метода"/>
+        </module>
+
+        <module name="NoWhitespaceBefore">
+            <message key="ws.preceded"
+                     value="Лишний пробел перед '{0}'"/>
         </module>
     </module>
 </module>

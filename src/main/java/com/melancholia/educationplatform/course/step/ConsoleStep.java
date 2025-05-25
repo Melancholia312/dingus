@@ -17,7 +17,7 @@ import java.util.List;
 public class ConsoleStep extends Step {
 
     @NotEmpty(message = "Задание не может быть пустым")
-    @Column(name = "task", nullable = false)
+    @Column(name = "task", nullable = false, length = 5000)
     private String task;
 
     @OneToMany(mappedBy = "consoleStep", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

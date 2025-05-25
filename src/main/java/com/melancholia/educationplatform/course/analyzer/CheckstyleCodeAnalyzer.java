@@ -30,11 +30,9 @@ public class CheckstyleCodeAnalyzer {
     public List<String> analyze(String code) {
         List<String> results = new ArrayList<>();
 
-        // Сначала проверяем компиляцию
         List<String> compilationIssues = checkCompilation(code);
         results.addAll(compilationIssues);
 
-        // Если есть ошибки компиляции, не продолжаем анализ Checkstyle
         if (!compilationIssues.isEmpty()) {
             return results;
         }
@@ -43,7 +41,7 @@ public class CheckstyleCodeAnalyzer {
             AuditListener listener = new AuditListener() {
                 @Override
                 public void addError(AuditEvent event) {
-                    results.add(String.format("Line %d: %s (%s)",
+                    results.add(String.format("Линия %d: %s (%s)",
                             event.getLine(),
                             event.getMessage(),
                             event.getSourceName()));
@@ -51,7 +49,7 @@ public class CheckstyleCodeAnalyzer {
 
                 @Override
                 public void addException(AuditEvent event, Throwable throwable) {
-                    results.add("ERROR: " + throwable.getMessage());
+                    results.add("ОШИБКА: " + throwable.getMessage());
                 }
 
                 // Остальные методы интерфейса остаются пустыми
@@ -107,7 +105,6 @@ public class CheckstyleCodeAnalyzer {
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null);
 
         try {
-            // Создаем временный файл в памяти
             JavaFileObject file = new SimpleJavaFileObject(
                     URI.create("string:///Main.java"),
                     JavaFileObject.Kind.SOURCE) {
@@ -124,7 +121,7 @@ public class CheckstyleCodeAnalyzer {
 
             if (!success) {
                 issues.addAll(diagnostics.getDiagnostics().stream()
-                        .map(d -> String.format("Line %d: %s",
+                        .map(d -> String.format("Линия %d: %s",
                                 d.getLineNumber(),
                                 d.getMessage(null)))
                         .collect(Collectors.toList()));
